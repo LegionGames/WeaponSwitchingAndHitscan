@@ -1,0 +1,91 @@
+[gd_scene load_steps=12 format=3 uid="uid://ci6hj2dadtl0o"]
+
+[ext_resource type="Script" path="res://Scripts/BulletTrail.gd" id="1_fwi64"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x1u5c"]
+transparency = 1
+albedo_color = Color(1, 0.643137, 0.141176, 1)
+emission_enabled = true
+emission = Color(0.894118, 0.494118, 0.329412, 1)
+emission_energy_multiplier = 10.0
+emission_operator = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_so3hr"]
+transparency = 1
+albedo_color = Color(0.584314, 0.0862745, 0.152941, 0.901961)
+metallic_specular = 0.3
+roughness = 0.1
+emission_enabled = true
+emission = Color(0.490196, 0.0666667, 0.101961, 1)
+
+[sub_resource type="Curve" id="Curve_tmjyl"]
+_data = [Vector2(0, 0.505263), 0.0, 0.0, 0, 0, Vector2(0.280749, 1), 0.0, 0.0, 0, 0, Vector2(0.561497, 0.263158), -1.14825, -1.14825, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_6m0md"]
+curve = SubResource("Curve_tmjyl")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0a6ey"]
+direction = Vector3(0, 0.2, -1)
+spread = 10.0
+initial_velocity_min = 8.0
+initial_velocity_max = 12.0
+scale_min = 0.5
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_6m0md")
+
+[sub_resource type="SphereMesh" id="SphereMesh_p476n"]
+radius = 0.04
+height = 0.08
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rbief"]
+albedo_color = Color(0.317647, 0.121569, 0.0745098, 1)
+metallic_specular = 0.0
+roughness = 0.9
+
+[sub_resource type="Curve" id="Curve_ngfvh"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.280749, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_0g6vo"]
+curve = SubResource("Curve_ngfvh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g2be1"]
+direction = Vector3(0, 0.2, -1)
+spread = 25.0
+initial_velocity_min = 4.0
+initial_velocity_max = 6.0
+scale_min = 0.5
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_0g6vo")
+
+[node name="BulletTrail" type="MeshInstance3D"]
+material_override = SubResource("StandardMaterial3D_x1u5c")
+script = ExtResource("1_fwi64")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[node name="BloodSplatter" type="GPUParticles3D" parent="."]
+material_override = SubResource("StandardMaterial3D_so3hr")
+cast_shadow = 0
+emitting = false
+amount = 12
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_0a6ey")
+draw_pass_1 = SubResource("SphereMesh_p476n")
+
+[node name="TerrainSplatter" type="GPUParticles3D" parent="."]
+material_override = SubResource("StandardMaterial3D_rbief")
+cast_shadow = 0
+emitting = false
+amount = 12
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_g2be1")
+draw_pass_1 = SubResource("SphereMesh_p476n")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

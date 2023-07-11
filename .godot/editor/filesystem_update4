@@ -1,0 +1,17 @@
+res://Scenes/World.tscn
+res://Models/BrickWall/brick_wall_red.tres
+res://Models/IronFence/metal.tres
+res://Models/Graves/gravestone_mat.tres
+res://Models/Graves/gravestone_dark_mat.tres
+res://Models/Trees/green_1.tres
+res://Models/Trees/green_2.tres
+res://Models/SteampunkGun/Metal.tres
+res://Models/SteampunkGun/Metal3.tres
+res://Models/SteampunkGun/Wood.tres
+res://Models/SteampunkGun/Metal2.tres
+res://Models/SteampunkGun/Gem.tres
+res://Models/SteampunkGun/Copper2.tres
+res://Models/SteampunkGun/Copper.tres
+res://Scenes/Player.tscn
+res://Scenes/Bullet.tscn
+res://Scenes/Zombie.tscn

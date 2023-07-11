@@ -1,0 +1,113 @@
+[gd_scene load_steps=14 format=3 uid="uid://yn400ram7bxt"]
+
+[ext_resource type="Script" path="res://Scripts/Bullet.gd" id="1_lc6tw"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_m767h"]
+size = Vector3(0.05, 0.05, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_look2"]
+albedo_color = Color(1, 0.764706, 0.294118, 1)
+emission_enabled = true
+emission = Color(0.568627, 1, 0.313726, 1)
+emission_energy_multiplier = 8.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r7cvc"]
+transparency = 1
+albedo_color = Color(0.945098, 1, 0.301961, 0.662745)
+emission_enabled = true
+emission = Color(0.184314, 0.87451, 0, 1)
+emission_energy_multiplier = 10.0
+refraction_enabled = true
+grow = true
+grow_amount = 0.01
+
+[sub_resource type="Curve" id="Curve_661dr"]
+max_value = 1.5
+_data = [Vector2(0, 0.642105), 0.0, 0.0, 0, 0, Vector2(0.21123, 1.23158), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_in54o"]
+curve = SubResource("Curve_661dr")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_txgw4"]
+direction = Vector3(0, 0.3, 1)
+spread = 20.0
+initial_velocity_min = 5.0
+initial_velocity_max = 9.0
+scale_min = 0.5
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_in54o")
+
+[sub_resource type="SphereMesh" id="SphereMesh_01g8p"]
+radius = 0.025
+height = 0.05
+radial_segments = 8
+rings = 4
+
+[sub_resource type="Curve" id="Curve_mobps"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_jouu8"]
+curve = SubResource("Curve_mobps")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vllmx"]
+lifetime_randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 0.1
+direction = Vector3(0, 0, -1)
+spread = 10.0
+gravity = Vector3(0, 0.5, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+scale_min = 0.5
+scale_curve = SubResource("CurveTexture_jouu8")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e50nl"]
+transparency = 1
+albedo_color = Color(0.419608, 1, 0.105882, 0.372549)
+emission_enabled = true
+emission = Color(0.329412, 0.898039, 0.211765, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_u2b3y"]
+material = SubResource("StandardMaterial3D_e50nl")
+size = Vector3(0.02, 0.02, 0.02)
+
+[node name="Bullet" type="Node3D"]
+script = ExtResource("1_lc6tw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_m767h")
+surface_material_override/0 = SubResource("StandardMaterial3D_look2")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+target_position = Vector3(0, 0, -1.2)
+collision_mask = 2
+collide_with_areas = true
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
+material_override = SubResource("StandardMaterial3D_r7cvc")
+cast_shadow = 0
+emitting = false
+lifetime = 0.8
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_txgw4")
+draw_pass_1 = SubResource("SphereMesh_01g8p")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[node name="Trail" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.527777)
+amount = 30
+randomness = 0.5
+process_material = SubResource("ParticleProcessMaterial_vllmx")
+draw_pass_1 = SubResource("BoxMesh_u2b3y")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
